@@ -32,5 +32,5 @@ service_linked_role_arn = "arn:aws:iam::640168451862:role/aws-service-role/autos
 
 # Options to deploy a bastion and Vault Instance
 
-deploy_bastion = true
-deploy_vault   = false
+#deploy_bastion = true
+#deploy_vault   = false
