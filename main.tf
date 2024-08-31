@@ -1,5 +1,7 @@
 # main.tf
 
+
+
 module "vpc" {
   source = "./modules/vpc"
 
@@ -122,16 +124,16 @@ module "bastion" {
 
 # Creates a host on subnet 2 with Vault Installed
 
-module "vault" {
-  source        = "./modules/vault"
-  subnet_id     = module.vpc.pub_sub2_id
-  ami           = var.vault_ami
-  instance_type = var.vault_instance_type
-  key_name      = var.key_name 
-  vpc_id        = module.vpc.vpc_id
-
-  user_data = filebase64("${path.module}/instance_scripts/vault_install.sh")
-}
+#module "vault" {
+#  source        = "./modules/vault"
+#  subnet_id     = module.vpc.pub_sub2_id
+#  ami           = var.vault_ami
+#  instance_type = var.vault_instance_type
+#  key_name      = var.key_name 
+#  vpc_id        = module.vpc.vpc_id#
+#
+#  user_data = filebase64("${path.module}/instance_scripts/vault_install.sh")
+#}
 
 
 # Creates an S3 bucket with lifecycle rules
