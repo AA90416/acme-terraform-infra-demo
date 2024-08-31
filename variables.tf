@@ -132,3 +132,13 @@ variable "service_linked_role_arn" {
   description = "The ARN of the service-linked role for Auto Scaling"
   type        = string
 }
+
+variable "deploy_bastion" {
+  type    = bool
+  default = true
+}
+
+variable "deploy_vault" {
+  type    = bool
+  default = true
+}

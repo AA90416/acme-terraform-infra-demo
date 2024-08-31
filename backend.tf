@@ -6,6 +6,3 @@ terraform {
     dynamodb_table = var.backend_dynamodb_table
   }
 }
-#terraform {
-#  backend "s3" {}
-#}
