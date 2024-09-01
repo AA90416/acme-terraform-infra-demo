@@ -117,7 +117,7 @@ Follow these steps to correctly initialize and apply the Terraform configuration
 This sequence ensures that the Terraform state is correctly stored in the remote backend and that the infrastructure is provisioned as expected.
 
 ## Prerequisites
-- [Terraform](https://www.terraform.io/downloads.html) installed on your local machine (version >= 0.12, < 0.14).
+- [Terraform](https://www.terraform.io/downloads.html) installed on your local machine (version "~> 1.2").
 - AWS IAM user credentials with sufficient permissions to create the infrastructure resources.
 - AWS CLI installed and configured.
 
