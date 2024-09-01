@@ -1,3 +1,4 @@
+
 # AWS Terraform POC Environment
 
 ![AWS Proof-of-Concept Environment](images/aws-proof-of-concept.jpg)
@@ -16,7 +17,7 @@ This repository contains Terraform code that sets up a comprehensive proof-of-co
    - Sub4 – 10.1.3.0/24 (not accessible from the internet)
 
 ### NAT Gateway Configuration
-- Configures two NAT gateways in the VPC for two public subnets, facilitating SSH access to the webservers from a bastion host.
+- Configures two NAT gateways in the VPC for two public subnets, facilitating SSH access to the web servers from a bastion host.
 
 ### EC2 Instance
 - 1 EC2 instance running Red Hat Linux 9.2 in subnet Sub2
@@ -43,26 +44,87 @@ This repository contains Terraform code that sets up a comprehensive proof-of-co
   - "Images" folder: Move objects older than 90 days to Glacier.
   - "Logs" folder: Delete objects older than 90 days.
 
-## How to Use the Terraform Code
-1. Clone this repository to your local machine.
-2. Install Terraform (version >= 0.12, < 0.14) if not already installed.
-3. AWS CLI install and instructions: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-4. Navigate to the `terraform/` directory.
-5. Modify the `terraform.tfvars` file to customize the settings based on your requirements.
-6. Ensure the `init_webserver.sh` script is executable using `chmod +x init_webserver.sh` before using it in Terraform.
-7. Run `terraform init` to initialize the Terraform environment.
-8. Run `terraform plan -var-file="terraform.tfvars"` to preview the changes that will be applied.
-9. Run `terraform apply -var-file="terraform.tfvars"` to create the AWS environment.
+## Conditional Module Inclusion
+The Terraform configuration includes modules for creating a bastion host and a Vault server. These modules are included conditionally based on variables (`deploy_bastion` and `deploy_vault`) to determine whether these resources should be deployed.
 
-## Clean Up
-To remove the created infrastructure and resources, run `terraform destroy -var-file="terraform.tfvars"`.
+For example:
+```hcl
+module "bastion" {
+  source        = "github.com/AA90416/acme-bastion-demo/modules/bastion"
+  count         = var.deploy_bastion ? 1 : 0
+  subnet_id     = module.vpc.pub_sub1_id
+  bastion_ami   = var.bastion_ami
+  instance_type = var.bastion_instance_type
+  key_name      = var.key_name
+  vpc_id        = module.vpc.vpc_id
+}
+
+module "vault" {
+  source        = "github.com/AA90416/acme-vault-demo/modules/vault"
+  count         = var.deploy_vault ? 1 : 0
+  subnet_id     = module.vpc.pub_sub2_id
+  ami           = var.vault_ami
+  instance_type = var.vault_instance_type
+  key_name      = var.key_name
+  vpc_id        = module.vpc.vpc_id
+  user_data     = filebase64("${path.module}/instance_scripts/vault_install.sh")
+}
+```
+
+### Remote Modules
+This project utilizes remote modules hosted on GitHub instead of storing the module code within this repository. The `source` attribute points to the GitHub repository where the module code resides. This approach promotes reusability and modularity.
+
+Example:
+```hcl
+module "vpc" {
+  source = "github.com/AA90416/acme-vpc-demo/modules/vpc"
+  ...
+}
+```
+
+## Initializing and Applying the Terraform Configuration
+
+Follow these steps to correctly initialize and apply the Terraform configuration:
+
+1. **Navigate to the `backend` Folder and Initialize:**
+   - Go to the `backend` folder to initialize the Terraform environment:
+   ```bash
+   cd acme-terraform-infra-demo/backend/
+   terraform init
+   ```
+
+2. **Apply the Configuration in the `backend` Folder:**
+   - While still in the `backend` folder, apply the configuration to set up the backend:
+   ```bash
+   cd acme-terraform-infra-demo/backend/
+   terraform apply -var-file="terraform.tfvars"
+   ```
+
+3. **Switch to the Root Directory and Initialize the Backend:**
+   - Navigate back to the root folder of your Terraform project and initialize using the backend that was just created:
+   ```bash
+   cd acme-terraform-infra-demo/
+   terraform init -backend-config=backend-config.hcl
+   ```
+
+4. **Apply the Configuration from the Root Directory:**
+   - Now, apply the Terraform configuration from the root directory:
+   ```bash
+   cd acme-terraform-infra-demo/
+   terraform apply -var-file="terraform.tfvars"
+   ```
+
+This sequence ensures that the Terraform state is correctly stored in the remote backend and that the infrastructure is provisioned as expected.
 
 ## Prerequisites
 - [Terraform](https://www.terraform.io/downloads.html) installed on your local machine (version >= 0.12, < 0.14).
 - AWS IAM user credentials with sufficient permissions to create the infrastructure resources.
+- AWS CLI installed and configured.
+
+## Clean Up
+To remove the created infrastructure and resources, run `terraform destroy -var-file="terraform.tfvars"`.
 
 ## Contact
-
 If you have any questions or need further assistance, feel free to reach out to the project owner:
 
 - Name: Roberto Otero

@@ -3,7 +3,9 @@
 
 
 module "vpc" {
-  source = "./modules/vpc"
+  source = "github.com/AA90416/acme-vpc-demo/modules/vpc"
+  
+  #"./modules/vpc"
 
   vpc_cidr              = var.vpc_cidr
   pub_sub1_cidr_block   = var.pub_sub1_cidr_block
@@ -114,7 +116,7 @@ data "aws_lb" "ALB" {
 # Creates a bastion host on subnet 1
 
 module "bastion" {
-  source        = "./modules/bastion"
+  source        = "github.com/AA90416/acme-bastion-demo/modules/bastion"
   count         = var.deploy_bastion ? 1 : 0
   subnet_id     = module.vpc.pub_sub1_id
   bastion_ami           = var.bastion_ami
@@ -126,7 +128,7 @@ module "bastion" {
 # Creates a host on subnet 2 with Vault Installed
 
 module "vault" {
-  source        = "./modules/vault"
+  source        = "github.com/AA90416/acme-vault-demo/modules/vault"
   count         = var.deploy_vault ? 1 : 0
   subnet_id     = module.vpc.pub_sub2_id
   ami           = var.vault_ami
@@ -141,7 +143,7 @@ module "vault" {
 # Creates an S3 bucket with lifecycle rules
 
 module "s3" {
-  source          = "./modules/s3"
+  source          = "github.com/AA90416/acme-s3-demo/modules/s3"
   bucket_name     = var.bucket_name
   lifecycle_rules = [
     {
