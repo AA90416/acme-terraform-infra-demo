@@ -1,5 +1,5 @@
 
-# AWS Terraform POC Environment
+# Deploying AWS infrastructure with Terraform
 
 ![AWS Proof-of-Concept Environment](images/aws-proof-of-concept.jpg)
 
