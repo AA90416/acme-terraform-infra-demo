@@ -1,10 +1,10 @@
 
 # Deploying AWS infrastructure with Terraform
 
-![AWS Proof-of-Concept Environment](images/aws-proof-of-concept.jpg)
+![AWS Proof-of-Concept Environment](images/aws-tf-poc.jpg)
 
 ## Overview
-This repository contains Terraform code that sets up a comprehensive proof-of-concept environment in AWS. The infrastructure is managed using Terraform and includes various components to demonstrate different AWS features and services.
+This repository contains Terraform code designed to set up a comprehensive proof-of-concept (POC) environment in AWS. The infrastructure is fully managed using Terraform, showcasing the power and flexibility of the Terraform CLI. This demo environment includes various components to demonstrate different AWS features and services, providing a practical example of how to automate and manage cloud infrastructure efficiently.
 
 ## Components
 
@@ -68,17 +68,6 @@ module "vault" {
   key_name      = var.key_name
   vpc_id        = module.vpc.vpc_id
   user_data     = filebase64("${path.module}/instance_scripts/vault_install.sh")
-}
-```
-
-### Remote Modules
-This project utilizes remote modules hosted on GitHub instead of storing the module code within this repository. The `source` attribute points to the GitHub repository where the module code resides. This approach promotes reusability and modularity.
-
-Example:
-```hcl
-module "vpc" {
-  source = "github.com/AA90416/acme-vpc-demo/modules/vpc"
-  ...
 }
 ```
 
