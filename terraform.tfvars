@@ -28,7 +28,7 @@ bastion_instance_type = "t2.micro"
 # Web Application Configuration
 web_ami = "ami-026ebd4cfe2c043b2"
 web_instance_type = "t2.micro"
-service_linked_role_arn = "arn:aws:iam::640168451862:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+service_linked_role_arn = "arn:aws:iam::aws-accound-id:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
 
 # Options to deploy a bastion and Vault Instance
 
